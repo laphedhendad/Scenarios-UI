@@ -1,0 +1,24 @@
+using System;
+
+namespace Laphed.ScenariosUI.Menus
+{
+    public interface IMenu : IEquatable<IMenu>
+    {
+        internal IMenuController Controller { get; }
+        internal void Construct();
+    }
+
+    public interface IMenu<TContext> : IMenu, IPreparableMenu<TContext>
+    {
+    }
+
+    public interface IPreparableMenu
+    {
+        void Prepare();
+    }
+
+    public interface IPreparableMenu<T>
+    {
+        void Prepare(T context);
+    }
+}
