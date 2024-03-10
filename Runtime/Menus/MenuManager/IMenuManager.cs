@@ -29,7 +29,7 @@ namespace Laphed.ScenariosUI.Menus
 
         void HideCurrentMenuImmediately<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
             where TMenu : IMenu;
-        
+
         HandleUnStashMenuHandler<TMenu> HandleStashCurrentMenu<TMenu>(
             HandleStashMenuHandler<TMenu> handleStashMenuHandler)
             where TMenu : IMenu;

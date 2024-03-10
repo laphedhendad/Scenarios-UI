@@ -4,34 +4,22 @@ using System.Collections.Generic;
 
 namespace Laphed.ScenariosUI.SingleActions
 {
-    internal class ConditionActionPairs : IEnumerable<ConditionActionPairs.ConditionActionPair>
+    class ConditionActionPairs : IEnumerable<ConditionActionPairs.ConditionActionPair>
     {
         public struct ConditionActionPair
         {
             public IResettableCondition condition;
             public Action action;
         }
-        
-        private readonly ConditionActionPair[] pairs;
-            
-        public ConditionActionPairs(ConditionActionPair[] pairs) => this.pairs = pairs;
 
-        public IEnumerator<ConditionActionPair> GetEnumerator() => new ConditionActionPairEnumerator(pairs);
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        
         private class ConditionActionPairEnumerator : IEnumerator<ConditionActionPair>
         {
-            private readonly ConditionActionPair[] pairs;
-            private int position = -1;
-
-            public ConditionActionPairEnumerator(ConditionActionPair[] pairs) => this.pairs = pairs;
-
             public ConditionActionPair Current
             {
                 get
                 {
-                    if (position == -1 || position >= pairs.Length)
+                    if (position == -1
+                     || position >= pairs.Length)
                     {
                         throw new IndexOutOfRangeException();
                     }
@@ -41,6 +29,15 @@ namespace Laphed.ScenariosUI.SingleActions
             }
 
             object IEnumerator.Current => Current;
+            private readonly ConditionActionPair[] pairs;
+            private int position = -1;
+
+            public ConditionActionPairEnumerator(ConditionActionPair[] pairs)
+            {
+                this.pairs = pairs;
+            }
+
+            public void Dispose() { }
 
             public bool MoveNext()
             {
@@ -53,9 +50,27 @@ namespace Laphed.ScenariosUI.SingleActions
                 return true;
             }
 
-            public void Reset() => position = -1;
+            public void Reset()
+            {
+                position = -1;
+            }
+        }
 
-            public void Dispose() { }
+        private readonly ConditionActionPair[] pairs;
+
+        public ConditionActionPairs(ConditionActionPair[] pairs)
+        {
+            this.pairs = pairs;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator<ConditionActionPair> GetEnumerator()
+        {
+            return new ConditionActionPairEnumerator(pairs);
         }
     }
 }

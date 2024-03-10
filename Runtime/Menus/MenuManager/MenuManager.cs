@@ -52,7 +52,7 @@ namespace Laphed.ScenariosUI.Menus
             {
                 preparableMenu.Prepare();
             }
-                
+
             RecalculateSortOrder();
 
             stackItems.Add(newStackItem);
@@ -102,7 +102,7 @@ namespace Laphed.ScenariosUI.Menus
 
             var newMenu = menusPool.Get<TMenu>();
             StackItem newStackItem = GenerateNewStackItem(newMenu, oldStackItem);
-            
+
             if (newMenu is IPreparableMenu preparableMenu)
             {
                 preparableMenu.Prepare();
@@ -155,7 +155,7 @@ namespace Laphed.ScenariosUI.Menus
 
             var newMenu = menusPool.Get<TMenu>();
             StackItem newStackItem = GenerateNewStackItem(newMenu, oldStackItem);
-            
+
             newMenu.Prepare(context);
 
             RecalculateSortOrder();
@@ -207,7 +207,7 @@ namespace Laphed.ScenariosUI.Menus
 
             var newMenu = menusPool.Get<TMenu>();
             StackItem newStackItem = GenerateNewStackItem(newMenu, oldStackItem);
-            
+
             newMenu.Prepare(context);
 
             RecalculateSortOrder();
@@ -249,7 +249,7 @@ namespace Laphed.ScenariosUI.Menus
         {
             ValidateMenuTypeWithCurrentMenu(hideMenuHandler.menu);
             hideMenuHandler.Consume();
-            
+
             StackItem oldStackItem = currentStackItem;
             currentStackItem = null;
             StackItem newStackItem = null;
@@ -276,9 +276,9 @@ namespace Laphed.ScenariosUI.Menus
 
             oldStackItem.state = new StackItem.HidingState();
             currentStackItem = newStackItem;
-            
+
             await oldStackItem.menu.Controller.Hide();
-            
+
             menusPool.Return(oldStackItem.menu);
             stackItems.Remove(oldStackItem);
         }
@@ -321,7 +321,8 @@ namespace Laphed.ScenariosUI.Menus
             currentStackItem = newStackItem;
         }
 
-        public HandleUnStashMenuHandler<TMenu> HandleStashCurrentMenu<TMenu>(HandleStashMenuHandler<TMenu> handleStashMenuHandler)
+        public HandleUnStashMenuHandler<TMenu> HandleStashCurrentMenu<TMenu>(
+            HandleStashMenuHandler<TMenu> handleStashMenuHandler)
             where TMenu : IMenu
         {
             TMenu menu = handleStashMenuHandler.menu;
@@ -347,24 +348,41 @@ namespace Laphed.ScenariosUI.Menus
             handleStashMenuHandler.Reset();
             menu.Controller.HandleUnStash();
         }
-        
-        void RecalculateSortOrder()
+
+        private void RecalculateSortOrder()
         {
             for (int i = 0; i < stackItems.Count; i++)
             {
                 stackItems[i]
-                   .menu
-                   .Controller
-                   .SetSortOrder(CalculateSortOrder(i));
+                   .menu.Controller.SetSortOrder(CalculateSortOrder(i));
             }
         }
 
-        int CalculateSortOrder(int stackIndex)
+        private int CalculateSortOrder(int stackIndex)
         {
             return menuGroupModel.startingSortOrder + stackIndex * menuGroupModel.menuGroupConfig.menuSortOrderStep;
         }
 
-        static StackItem GenerateNewStackItem(IMenu menu, StackItem rootStackItem)
+        private void ValidateMenuTypeWithCurrentMenu<TMenu>(TMenu menu)
+            where TMenu : IMenu
+        {
+            if (!menu.Equals(currentStackItem.menu))
+            {
+                throw new Exception($"{nameof(Menus)}: Current and target menus is not equals")
+                {
+                    Data =
+                    {
+                        {
+                            "CurrentMenuType", currentStackItem.menu.GetType()
+                               .FullName
+                        },
+                        { "TargetHideMenuType", typeof(TMenu).FullName }
+                    }
+                };
+            }
+        }
+
+        private static StackItem GenerateNewStackItem(IMenu menu, StackItem rootStackItem)
         {
             StackItem.IState newStackItemState;
 
@@ -395,25 +413,6 @@ namespace Laphed.ScenariosUI.Menus
                 menu = menu,
                 state = newStackItemState
             };
-        }
-        
-        void ValidateMenuTypeWithCurrentMenu<TMenu>(TMenu menu)
-            where TMenu : IMenu
-        {
-            if (menu.Equals(currentStackItem.menu))
-            {
-                throw new Exception($"{nameof(Menus)}: Current and target menus is not equals")
-                {
-                    Data =
-                    {
-                        {
-                            "CurrentMenuType", currentStackItem.menu.GetType()
-                               .FullName
-                        },
-                        { "TargetHideMenuType", typeof(TMenu).FullName }
-                    }
-                };
-            }
         }
     }
 }

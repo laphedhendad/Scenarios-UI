@@ -5,8 +5,8 @@ namespace Laphed.ScenariosUI.Menus
 {
     public class MenusPool : IMenusPool
     {
-        readonly IMenuFactory menuFactory;
-        readonly Dictionary<Type, List<IMenu>> menuMap;
+        private readonly IMenuFactory menuFactory;
+        private readonly Dictionary<Type, List<IMenu>> menuMap;
 
         public MenusPool(IMenuFactory menuFactory)
         {
