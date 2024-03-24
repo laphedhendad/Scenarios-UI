@@ -1,42 +1,61 @@
+using System;
 using System.Collections.Generic;
 
 namespace Laphed.ScenariosUI.SingleActions
 {
     public class SingleActionsExecutor
     {
-        private readonly ConditionActionPairs conditionActionPairs;
-
-        internal SingleActionsExecutor(ConditionActionPairs.ConditionActionPair[] conditionActionPairs)
+        private class ConditionActionPair
         {
-            this.conditionActionPairs = new ConditionActionPairs(conditionActionPairs);
+            public IResettableCondition condition;
+            public Action action;
         }
+
+        private readonly Dictionary<object, List<ConditionActionPair>> actionsMap;
 
         public void Execute()
         {
-            IEnumerator<ConditionActionPairs.ConditionActionPair> enumerator = conditionActionPairs.GetEnumerator();
-
-            ConditionActionPairs.ConditionActionPair pair;
-
-            while (enumerator.MoveNext())
+            bool actionInvoked = false;
+            
+            foreach (var kv in actionsMap)
             {
-                pair = enumerator.Current;
-
-                if (!pair.condition.IsMet)
+                foreach (ConditionActionPair conditionActionPair in kv.Value)
                 {
-                    continue;
+                    if (actionInvoked)
+                    {
+                        conditionActionPair.condition.Reset();
+                        continue;
+                    }
+                    
+                    if (!conditionActionPair.condition.IsMet)
+                    {
+                        continue;
+                    }
+
+                    conditionActionPair.condition.Reset();
+                    conditionActionPair.action.Invoke();
+                    actionInvoked = true;
                 }
-
-                pair.condition.Reset();
-                pair.action.Invoke();
             }
+        }
 
-            while (enumerator.MoveNext())
+        public void AddAction(object actionProvider, IResettableCondition condition, Action action)
+        {
+            if (!actionsMap.ContainsKey(actionProvider))
             {
-                pair = enumerator.Current;
-                pair.condition.Reset();
+                actionsMap.Add(actionProvider, new List<ConditionActionPair>());
             }
+            
+            actionsMap[actionProvider].Add(new ConditionActionPair
+            {
+                condition = condition,
+                action = action
+            });
+        }
 
-            enumerator.Dispose();
+        public void ForgetActionsProvider(object actionProvider)
+        {
+            actionsMap.Remove(actionProvider);
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
-namespace Laphed.ScenariosUI.Menus
+namespace Laphed.ScenariosUI.Menus.Mono
 {
-    [RequireComponent(typeof(MonoMenuActivityBase))]
-    public class MonoMenuBase : MonoBehaviour, IMenu
+    [RequireComponent(typeof(MenuActivityBase))]
+    public class BaseMenu : MonoBehaviour, IMenu
     {
         IMenuController IMenu.Controller => menuController;
 
@@ -11,7 +11,7 @@ namespace Laphed.ScenariosUI.Menus
 
         internal void Construct()
         {
-            var activityMenuComponent = GetComponent<MonoMenuActivityBase>();
+            var activityMenuComponent = GetComponent<MenuActivityBase>();
             activityMenuComponent.Construct();
 
             var menuNextStateRepository = new MenuNextStateRepository();

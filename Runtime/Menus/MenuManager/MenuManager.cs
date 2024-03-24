@@ -244,7 +244,7 @@ namespace Laphed.ScenariosUI.Menus
             };
         }
 
-        public async UniTask HideCurrentMenu<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
+        public async UniTask HideMenu<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
             where TMenu : IMenu
         {
             ValidateMenuTypeWithCurrentMenu(hideMenuHandler.menu);
@@ -283,7 +283,7 @@ namespace Laphed.ScenariosUI.Menus
             stackItems.Remove(oldStackItem);
         }
 
-        public void HideCurrentMenuImmediately<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
+        public void HideMenuImmediately<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
             where TMenu : IMenu
         {
             ValidateMenuTypeWithCurrentMenu(hideMenuHandler.menu);

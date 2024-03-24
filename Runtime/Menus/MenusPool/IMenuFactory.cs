@@ -2,6 +2,6 @@
 {
     public interface IMenuFactory
     {
-        TMenu Create<TMenu>();
+        public TMenu Create<TMenu>() where TMenu : IMenu;
     }
 }

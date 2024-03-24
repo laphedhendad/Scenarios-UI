@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 
-namespace Laphed.ScenariosUI.Menus
+namespace Laphed.ScenariosUI.Menus.Mono
 {
-    public abstract class MonoMenuActivityBase
+    public abstract class MenuActivityBase
         : MonoBehaviour,
           IActivityMenuComponent
     {
-        protected internal abstract void Construct();
         protected abstract IShowingMenuComponent ShowingMenuComponent { get; }
         protected abstract IHidingMenuComponent HidingMenuComponent { get; }
         protected abstract IStashingMenuComponent StashingMenuComponent { get; }
         protected abstract IUnStashingMenuComponent UnStashingMenuComponent { get; }
         protected abstract ICanvasOrderChangerMenuComponent CanvasOrderChangerMenuComponent { get; }
+        protected internal abstract void Construct();
 
         IShowingMenuComponent IActivityMenuComponent.ShowingMenuComponent => ShowingMenuComponent;
 

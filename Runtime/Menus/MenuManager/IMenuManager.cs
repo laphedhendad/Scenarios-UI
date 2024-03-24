@@ -24,10 +24,10 @@ namespace Laphed.ScenariosUI.Menus
         ShowMenuResult<TMenu> ShowMenuImmediately<TMenu, TContext>(TContext context)
             where TMenu : IMenu, IPreparableMenu<TContext>;
 
-        UniTask HideCurrentMenu<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
+        UniTask HideMenu<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
             where TMenu : IMenu;
 
-        void HideCurrentMenuImmediately<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
+        void HideMenuImmediately<TMenu>(HideMenuHandler<TMenu> hideMenuHandler)
             where TMenu : IMenu;
 
         HandleUnStashMenuHandler<TMenu> HandleStashCurrentMenu<TMenu>(
