@@ -1,12 +1,11 @@
-﻿using Laphed.ScenariosUI.SingleActions;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Laphed.ScenariosUI.Menus.Mono
 {
     public class ButtonClickRegistrator
         : MonoBehaviour,
-          IResettableCondition
+          IButtonClickRegistrator
     {
         public bool IsMet { get; private set; }
 

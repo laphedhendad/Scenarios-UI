@@ -11,7 +11,7 @@ namespace Laphed.ScenariosUI.SingleActions
             public Action action;
         }
 
-        private readonly Dictionary<object, List<ConditionActionPair>> actionsMap;
+        private readonly Dictionary<object, List<ConditionActionPair>> actionsMap = new();
 
         public void Execute()
         {
@@ -39,7 +39,7 @@ namespace Laphed.ScenariosUI.SingleActions
             }
         }
 
-        public void AddAction(object actionProvider, IResettableCondition condition, Action action)
+        public SingleActionsExecutor AddAction(object actionProvider, IResettableCondition condition, Action action)
         {
             if (!actionsMap.ContainsKey(actionProvider))
             {
@@ -51,6 +51,8 @@ namespace Laphed.ScenariosUI.SingleActions
                 condition = condition,
                 action = action
             });
+            
+            return this;
         }
 
         public void ForgetActionsProvider(object actionProvider)

@@ -9,10 +9,14 @@ namespace Laphed.ScenariosUI.Menus
         public UniTask TransitionTask { get; private set; }
 
         private readonly StatesContext statesContext;
+        private readonly IHidingMenuComponent hidingMenuComponent;
+        private readonly IMenuStateChanger menuStateChanger;
 
         public HidingAsyncState(StatesContext statesContext)
         {
             this.statesContext = statesContext;
+            hidingMenuComponent = statesContext.HidingMenuComponent;
+            menuStateChanger = statesContext.MenuStateChanger;
         }
 
         public override UniTask ShowMenu(int sortOrder)
@@ -48,6 +52,12 @@ namespace Laphed.ScenariosUI.Menus
         public override void SetSortOrder(int sortOrder)
         {
             throw new System.NotImplementedException();
+        }
+
+        protected internal override async void OnEnter()
+        {
+            await hidingMenuComponent.Hide();
+            menuStateChanger.SetNextState(new HiddenState(statesContext));
         }
     }
 }

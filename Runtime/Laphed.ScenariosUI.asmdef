@@ -2,7 +2,8 @@
     "name": "Laphed.ScenariosUI",
     "rootNamespace": "Laphed.ScenariosUI",
     "references": [
-        "UniTask"
+        "UniTask",
+        "Player"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -58,8 +58,7 @@ namespace Laphed.ScenariosUI.Menus
 
         protected internal override async void OnEnter()
         {
-            TransitionTask = showingMenuComponent.Show(sortOrder);
-            await TransitionTask;
+            await showingMenuComponent.Show(sortOrder);
             menuStateChanger.SetNextState(new ShownState(statesContext));
         }
     }
