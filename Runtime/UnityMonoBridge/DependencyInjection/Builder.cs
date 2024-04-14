@@ -20,6 +20,8 @@ namespace Laphed.ScenariosUI.DependencyInjection
 
         public IController Build()
         {
+            var injector = new Injector(injections);
+            injector.SelfBind();
             return new Injector(injections);
         }
     }

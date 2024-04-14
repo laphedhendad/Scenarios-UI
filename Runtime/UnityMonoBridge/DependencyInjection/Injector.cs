@@ -16,6 +16,11 @@ namespace Laphed.ScenariosUI.DependencyInjection
         {
             this.injections = injections;
         }
+
+        internal void SelfBind()
+        {
+            injections.Add(typeof(IController), this);
+        }
         
         void IController.Inject(MonoBehaviour root)
         {
