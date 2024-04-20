@@ -2,6 +2,7 @@
 
 namespace Laphed.ScenariosUI.Menus.Mono
 {
+    [DisallowMultipleComponent]
     public abstract class MenuActivityBase
         : MonoBehaviour,
           IActivityMenuComponent
