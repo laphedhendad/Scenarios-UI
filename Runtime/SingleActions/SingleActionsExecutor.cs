@@ -1,63 +1,57 @@
 using System;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
 namespace Laphed.ScenariosUI.SingleActions
 {
     public class SingleActionsExecutor
     {
-        private class ConditionActionPair
+        private readonly ConditionActionPairs conditionActionPairs;
+
+        internal SingleActionsExecutor(ConditionActionPairs conditionActionPairs)
         {
-            public IResettableCondition condition;
-            public Action action;
+            this.conditionActionPairs = conditionActionPairs;
         }
-
-        private readonly Dictionary<object, List<ConditionActionPair>> actionsMap = new();
-
-        public void Execute()
+        
+        public UniTask Execute()
         {
-            bool actionInvoked = false;
+            UniTask result = UniTask.CompletedTask;
             
-            foreach (var kv in actionsMap)
+            using var enumerator = conditionActionPairs.GetEnumerator();
+
+            while (enumerator.MoveNext())
             {
-                foreach (ConditionActionPair conditionActionPair in kv.Value)
+                ConditionActionPairs.ConditionActionPair conditionActionPair = enumerator.Current;
+
+                if (!conditionActionPair.condition.IsMet)
                 {
-                    if (actionInvoked)
-                    {
-                        conditionActionPair.condition.Reset();
-                        continue;
-                    }
-                    
-                    if (!conditionActionPair.condition.IsMet)
-                    {
-                        continue;
-                    }
-
-                    conditionActionPair.condition.Reset();
-                    conditionActionPair.action.Invoke();
-                    actionInvoked = true;
+                    continue;
                 }
-            }
-        }
+                
+                conditionActionPair.condition.Reset();
 
-        public SingleActionsExecutor AddAction(object actionProvider, IResettableCondition condition, Action action)
-        {
-            if (!actionsMap.ContainsKey(actionProvider))
-            {
-                actionsMap.Add(actionProvider, new List<ConditionActionPair>());
-            }
-            
-            actionsMap[actionProvider].Add(new ConditionActionPair
-            {
-                condition = condition,
-                action = action
-            });
-            
-            return this;
-        }
+                switch (conditionActionPair.action)
+                {
+                    case VoidAction voidAction:
+                        voidAction.Invoke();
+                        break;
+                    
+                    case TaskAction taskAction:
+                        result = taskAction.Task.Invoke();
+                        break;
+                    
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
-        public void ForgetActionsProvider(object actionProvider)
-        {
-            actionsMap.Remove(actionProvider);
+                break;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                enumerator.Current.condition.Reset();
+            }
+
+            return result;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Laphed.ScenariosUI.SingleActions
         public struct ConditionActionPair
         {
             public IResettableCondition condition;
-            public Action action;
+            public IAction action;
         }
 
         private class ConditionActionPairEnumerator : IEnumerator<ConditionActionPair>
