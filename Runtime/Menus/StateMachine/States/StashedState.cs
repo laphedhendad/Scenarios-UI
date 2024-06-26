@@ -12,6 +12,7 @@ namespace Laphed.ScenariosUI.Menus
         {
             this.statesContext = statesContext;
             menuStateChanger = statesContext.MenuStateChanger;
+            canvasOrderChanger = statesContext.CanvasOrderChangerMenuComponent;
         }
 
         public override UniTask ShowMenu(int sortOrder)
